@@ -1067,14 +1067,7 @@ struct f2fs_io_info {
 	block_t old_blkaddr;	/* old block address before Cow */
 	struct page *page;	/* page to be written */
 	struct page *encrypted_page;	/* encrypted page */
-	struct list_head list;		/* serialize IOs */
-	bool submitted;		/* indicate IO submission */
-	int need_lock;		/* indicate we need to lock cp_rwsem */
-	bool in_list;		/* indicate fio is in io_list */
 	bool is_meta;		/* indicate borrow meta inode mapping or not */
-	bool retry;		/* need to reallocate block address */
-	enum iostat_type io_type;	/* io type */
-	struct writeback_control *io_wbc; /* writeback control */
 };
 
 #define is_read_io(rw) ((rw) == READ)
