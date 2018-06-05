@@ -68,11 +68,12 @@ static void __get_inode_rdev(struct inode *inode, struct f2fs_inode *ri)
 	}
 }
 
-static bool __written_first_block(struct f2fs_inode *ri)
+static bool __written_first_block(struct f2fs_sb_info *sbi,
+					struct f2fs_inode *ri)
 {
 	block_t addr = le32_to_cpu(ri->i_addr[offset_in_addr(ri)]);
 
-	if (is_valid_blkaddr(addr))
+	if (is_valid_data_blkaddr(sbi, addr))
 		return true;
 	return false;
 }
@@ -275,21 +276,8 @@ static int do_read_inode(struct inode *inode)
 	/* get rdev by using inline_info */
 	__get_inode_rdev(inode, ri);
 
-	if (__written_first_block(ri))
-		set_inode_flag(inode, FI_FIRST_BLOCK_WRITTEN);
-
-	if (!f2fs_need_inode_block_update(sbi, inode->i_ino))
-		fi->last_disk_size = inode->i_size;
-
-	if (fi->i_flags & F2FS_PROJINHERIT_FL)
-		set_inode_flag(inode, FI_PROJ_INHERIT);
-
-	if (f2fs_has_extra_attr(inode) && f2fs_sb_has_project_quota(sbi->sb) &&
-			F2FS_FITS_IN_INODE(ri, fi->i_extra_isize, i_projid))
-		i_projid = (projid_t)le32_to_cpu(ri->i_projid);
-	else
-		i_projid = F2FS_DEF_PROJID;
-	fi->i_projid = make_kprojid(&init_user_ns, i_projid);
+	if (__written_first_block(sbi, ri))
+		set_inode_flag(F2FS_I(inode), FI_FIRST_BLOCK_WRITTEN);
 
 	if (f2fs_has_extra_attr(inode) && f2fs_sb_has_inode_crtime(sbi->sb) &&
 			F2FS_FITS_IN_INODE(ri, fi->i_extra_isize, i_crtime)) {
