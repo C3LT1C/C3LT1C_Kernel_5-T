@@ -1038,7 +1038,7 @@ next_dnode:
 		goto unlock_out;
 	}
 
-	if (!is_valid_blkaddr(dn.data_blkaddr)) {
+	if (!is_valid_data_blkaddr(sbi, dn.data_blkaddr)) {
 		if (create) {
 			if (unlikely(f2fs_cp_error(sbi))) {
 				err = -EIO;
@@ -1775,7 +1775,7 @@ got_it:
 	 * If current allocation needs SSR,
 	 * it had better in-place writes for updated data.
 	 */
-	if (unlikely(is_valid_blkaddr(fio->blk_addr) &&
+	if (unlikely(is_valid_data_blkaddr(fio->sbi, fio->blk_addr) &&
 			!is_cold_data(page) &&
 			need_inplace_update(inode))) {
 		rewrite_data_page(fio);
