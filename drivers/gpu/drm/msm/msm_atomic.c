@@ -379,17 +379,12 @@ static void msm_atomic_helper_commit_modeset_enables(struct drm_device *dev,
 		if (!connector->state->best_encoder)
 			continue;
 
-		if (!connector->state->crtc->state->active ||
-		    !drm_atomic_crtc_needs_modeset(
-				    connector->state->crtc->state))
+		if (drm_crtc_vblank_get(crtc))
 			continue;
 
-		encoder = connector->state->best_encoder;
+		kms->funcs->wait_for_crtc_commit_done(kms, crtc);
 
-		DRM_DEBUG_ATOMIC("bridge enable enabling [ENCODER:%d:%s]\n",
-				 encoder->base.id, encoder->name);
-
-		drm_bridge_enable(encoder->bridge);
+		drm_crtc_vblank_put(crtc);
 	}
 	SDE_ATRACE_END("msm_enable");
 }
