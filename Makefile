@@ -1,7 +1,7 @@
 VERSION = 4
 PATCHLEVEL = 4
 SUBLEVEL = 180
-EXTRAVERSION =
+EXTRAVERSION = -C3LT1C-v1.5
 NAME = Blurry Fish Butt
 
 # *DOCUMENTATION*
@@ -719,6 +719,14 @@ else
 endif
 endif
 KBUILD_CFLAGS += $(stackp-flag)
+
+ifdef CONFIG_KCOV
+  ifeq ($(call cc-option, $(CFLAGS_KCOV)),)
+    $(warning Cannot use CONFIG_KCOV: \
+             -fsanitize-coverage=trace-pc is not supported by compiler)
+    CFLAGS_KCOV =
+  endif
+endif
 
 ifeq ($(cc-name),clang)
 KBUILD_CPPFLAGS += $(call cc-option,-Qunused-arguments,)
