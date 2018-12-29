@@ -58,6 +58,7 @@ CONFIG_DEFAULT_TCP_CONG="westwood"
 # Kernel Tweaks
 #
 CONFIG_DYNAMIC_STUNE_BOOST=y
+CONFIG_ADRENO_IDLER=y
 
 #
 # OnePlus 5/T General Configs
