@@ -1,24 +1,31 @@
 #ifndef _LINUX_KLAPSE_H
 #define _LINUX_KLAPSE_H
 
-/* Required variables for external access. Change as per use */
+/* KLAPSE_MDSS : Use 1 if using with MDSS */
+#define KLAPSE_MDSS 1
+
+/* set_rgb_slider : Interface function for brightness-mode */
 extern void set_rgb_slider(u32 bl_lvl);
-void kcal_ext_apply_values(int red, int green, int blue);
-int kcal_ext_get_value(int color);
 
-enum rgb {
-	KCAL_RED = 0,
-	KCAL_GREEN,
-	KCAL_BLUE,
-};
+/* This file uses generalised K_### defines
+ * The interpretation should be the respective color's var
+ */
+#define K_TYPE   unsigned short
 
-#define KCAL_COLOR(x) (kcal_ext_get_value(x))
+#if KLAPSE_MDSS
+ #define K_RED    kcal_get_color(0)
+ #define K_GREEN  kcal_get_color(1)
+ #define K_BLUE   kcal_get_color(2)
 
-// This file uses generalised K_### defines
-// The interpretation (right argument) should be the respective color's var
-#define K_RED KCAL_COLOR(KCAL_RED)
-#define K_GREEN KCAL_COLOR(KCAL_GREEN)
-#define K_BLUE KCAL_COLOR(KCAL_BLUE)
+ extern K_TYPE kcal_get_color(unsigned short int code);
+ extern void klapse_kcal_push(int r, int g, int b);
+#else
+ #define K_RED    kcal_red
+ #define K_GREEN  kcal_green
+ #define K_BLUE   kcal_blue
+
+ extern K_TYPE K_RED, K_GREEN, K_BLUE;
+#endif
 
 /* DEFAULT_ENABLE values :
  * 0 = off
@@ -34,7 +41,7 @@ enum rgb {
 #define SCALE_VAL_MIN   20
 
 // MAX_BRIGHTNESS : Maximum value of the display brightness/backlight
-#define MAX_BRIGHTNESS  255
+#define MAX_BRIGHTNESS  1023
 
 // MIN_BRIGHTNESS : Minimum value of the display brightness/backlight
 #define MIN_BRIGHTNESS  2
