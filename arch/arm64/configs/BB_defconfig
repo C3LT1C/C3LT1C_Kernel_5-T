@@ -70,6 +70,7 @@ CONFIG_DEFAULT_TCP_CONG="westwood"
 # Kernel Tweaks
 #
 CONFIG_SOUND_CONTROL=y
+CONFIG_STATE_NOTIFIER=y
 
 #
 # OnePlus 5/T General Configs
